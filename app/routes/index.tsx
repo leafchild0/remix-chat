@@ -1,11 +1,10 @@
 import type { ActionFunction, LoaderFunction } from '@remix-run/node'
 import { json, redirect } from '@remix-run/node'
 import { Form, useActionData } from '@remix-run/react'
-import { doesUserExist } from '~/chat.server'
+import ChatManager from '~/chat.server'
 import { commitSession, getSession } from '~/session.server'
 import { ActionData } from "~/interfaces";
-
-const MAX_USERNAME_LENGTH = 20
+import { MAX_USERNAME_LENGTH } from "~/constants";
 
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -24,7 +23,7 @@ export const action: ActionFunction = async ({ request }) => {
   if (
     user.length <= 0 ||
     user.toLowerCase() === 'system' ||
-    doesUserExist(user)
+    ChatManager.doesUserExist(user)
   ) {
     return json<ActionData>({
       error: 'Invalid username or user already exists',

@@ -1,67 +1,52 @@
 import { redirect } from '@remix-run/node'
-import { LRUCache } from 'lru-cache'
-import { EventEmitter } from 'node:events'
 import { getSession } from './session.server'
 
-declare global {
-  let users: LRUCache<string, {}>;
-  let chatEvents: EventEmitter;
-}
+export default class ChatManager {
+  /**
+   * Checks if a user is currently logged in, and if not, redirects to the login page.
+   * If the user is logged in, returns the user's name.
+   */
+  static async getSessionUser(request: Request): Promise<string> {
+    const session = await getSession(request.headers.get('Cookie'))
+    if (!session.get('user')) throw redirect('/')
+    return session.get('user')
+  }
 
-// @ts-ignore
-global.users = global.users ||
-  new LRUCache({
-    max: 100,
-    ttl: 3_600_000,
-  })
-// @ts-ignore
-global.chatEvents = global.chatEvents || new EventEmitter()
+  /**
+   * Adds a user to the chat.
+   */
+  static addUser(user: string) {
+    users.set(user, undefined)
+    chatEvents.emit('user-joined', user)
+  }
 
-export const chat = chatEvents
+  /**
+   * Removes a user from the chat.
+   */
+  static removeUser(user: string)  {
+    users.delete(user)
+    chatEvents.emit('user-left', user)
+  }
 
-/**
- * Checks if a user is currently logged in, and if not, redirects to the login page.
- * If the user is logged in, returns the user's name.
- */
-export async function getSessionUser(request: Request): Promise<string> {
-  const session = await getSession(request.headers.get('Cookie'))
-  if (!session.get('user')) throw redirect('/')
-  return session.get('user')
-}
+  /**
+   * Checks if a user is currently logged in.
+   */
+  static doesUserExist(user: string) {
+    return users.has(user)
+  }
 
-/**
- * Adds a user to the chat.
- */
-export function addUser(user: string) {
-  users.set(user, undefined)
-  chatEvents.emit('user-joined', user)
-}
+  /**
+   * Returns a list of all users currently logged in.
+   */
+  static getUsers() {
+    return Array.from(users.keys())
+  }
 
-/**
- * Removes a user from the chat.
- */
-export function removeUser(user: string) {
-  users.delete(user)
-  chatEvents.emit('user-left', user)
-}
+  /**
+   * Sends a message to the chat on behalf of a user
+   */
+  static sendMessage(user: string, message: string) {
+    chatEvents.emit('message', { user, message })
+  }
 
-/**
- * Checks if a user is currently logged in.
- */
-export function doesUserExist(user: string) {
-  return users.has(user)
-}
-
-/**
- * Returns a list of all users currently logged in.
- */
-export function getUsers() {
-  return Array.from(users.keys())
-}
-
-/**
- * Sends a message to the chat on behalf of a user
- */
-export function sendMessage(user: string, message: string) {
-  chatEvents.emit('message', { user, message })
 }

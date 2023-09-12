@@ -1,22 +1,15 @@
 import type { LoaderFunction } from '@remix-run/node'
-import {
-  addUser,
-  chat,
-  doesUserExist,
-  getSessionUser,
-  getUsers,
-  removeUser,
-} from '~/chat.server'
+import ChatManager from '~/chat.server'
 import { ChatMessage } from "~/interfaces";
+import { chat } from "~/root";
 
 /**
  * Pretty much logic of live chatting here, events emitting, these are streams
  * Handles different listeners for events
- * @param request
  */
 export const loader: LoaderFunction = async ({ request }) => {
   if (!request.signal) return new Response(null, { status: 500 })
-  const user = await getSessionUser(request)
+  const user = await ChatManager.getSessionUser(request)
 
   return new Response(
     new ReadableStream({
@@ -54,7 +47,7 @@ export const loader: LoaderFunction = async ({ request }) => {
           request.signal.removeEventListener('abort', close)
           controller.close()
 
-          removeUser(user)
+          ChatManager.removeUser(user)
         }
 
         chat.addListener('message', handleChatMessage)
@@ -67,9 +60,9 @@ export const loader: LoaderFunction = async ({ request }) => {
           return
         }
 
-        if (!doesUserExist(user)) {
-          addUser(user)
-          console.log('users', getUsers())
+        if (!ChatManager.doesUserExist(user)) {
+          ChatManager.addUser(user)
+          console.log('users', ChatManager.getUsers())
         }
       },
     }),

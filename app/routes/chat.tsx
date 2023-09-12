@@ -2,19 +2,18 @@ import type { ActionFunction, LoaderFunction } from '@remix-run/node'
 import { json, redirect } from '@remix-run/node'
 import { Form, useLoaderData, useNavigation } from "@remix-run/react";
 import { useEffect, useRef, useState } from 'react'
-import { getSessionUser, getUsers, sendMessage } from '~/chat.server'
+import ChatManager from '~/chat.server'
 import { destroySession, getSession } from '~/session.server'
 import { ChatMessage, LoaderData } from "~/interfaces";
-
-const MAX_MESSAGE_LENGTH = 256
+import { MAX_MESSAGE_LENGTH } from "~/constants";
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const user = await getSessionUser(request)
-  return json<LoaderData>({ user, users: getUsers() })
+  const user = await ChatManager.getSessionUser(request)
+  return json<LoaderData>({ user, users: ChatManager.getUsers() })
 }
 
 export const action: ActionFunction = async ({ request }) => {
-  const user = await getSessionUser(request)
+  const user = await ChatManager.getSessionUser(request)
   const formData = await request.formData()
   const action = String(formData.get('_action'))
 
@@ -28,7 +27,7 @@ export const action: ActionFunction = async ({ request }) => {
   if (action === 'send-message') {
     const message = String(formData.get('message')).slice(0, MAX_MESSAGE_LENGTH)
     if (message.length > 0) {
-      sendMessage(user, message)
+      ChatManager.sendMessage(user, message)
     }
   }
 
