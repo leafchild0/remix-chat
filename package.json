@@ -1,7 +1,7 @@
 {
   "name": "t-chat",
   "version": "1.0.0",
-  "description": "Simple chat app using sockets and node",
+  "description": "Simple chat app using Remix and node",
   "main": "server.js",
   "scripts": {
     "build": "remix build",
@@ -14,7 +14,7 @@
     "start": "cross-env NODE_ENV=production node ./server.js"
   },
   "author": "leafchild0",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@remix-run/express": "^1.19.3",
     "@remix-run/node": "^1.19.3",
