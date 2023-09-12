@@ -4,7 +4,9 @@
 out
 gen
 
-dist
-
+/.cache
+/build
+/public/build
+.env
 
 node_modules
