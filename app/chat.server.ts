@@ -16,7 +16,7 @@ export default class ChatManager {
    * Adds a user to the chat.
    */
   static addUser(user: string) {
-    users.set(user, undefined)
+    users.set(user, {})
     chatEvents.emit('user-joined', user)
   }
 
