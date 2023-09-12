@@ -1,11 +1,12 @@
-import type { ActionFunction, LoaderFunction } from '@remix-run/node'
-import { json, redirect } from '@remix-run/node'
-import { Form, useLoaderData, useNavigation } from "@remix-run/react";
-import { useEffect, useRef, useState } from 'react'
-import ChatManager from '~/chat.server'
-import { destroySession, getSession } from '~/session.server'
+import type { ActionFunction, LoaderFunction } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
+import { useEffect, useState } from "react";
+import ChatManager from "~/chat.server";
+import { destroySession, getSession } from "~/session.server";
 import { ChatMessage, LoaderData } from "~/interfaces";
 import { MAX_MESSAGE_LENGTH } from "~/constants";
+import { Chat as MainChat } from "../components/Chat";
 
 export const loader: LoaderFunction = async ({ request }) => {
   const user = await ChatManager.getSessionUser(request)
@@ -36,18 +37,10 @@ export const action: ActionFunction = async ({ request }) => {
 
 export default function Chat() {
   const loaderData = useLoaderData<LoaderData>()
-  const navigation = useNavigation()
-  const formRef = useRef<HTMLFormElement>(null)
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [users, setUsers] = useState<Set<string>>(
     () => new Set(loaderData.users)
   )
-
-  useEffect(() => {
-    if (navigation.state === 'submitting') {
-      formRef.current?.reset()
-    }
-  }, [navigation.state])
 
   useEffect(() => {
     const eventSource = new EventSource('/live/chat')
@@ -83,45 +76,8 @@ export default function Chat() {
     return () => eventSource.close()
   }, [])
 
-  return (
-    <main style={{ fontFamily: 'Helvetica, sans-serif', lineHeight: '1.4' }}>
-      <header style={{ marginBlock: '1rem' }}>
-        <h1 style={{ marginBlock: '0' }}>Remix Chat</h1>
-        <Form method="post">
-          <button
-            type="submit"
-            name="_action"
-            value="logout"
-            title={`${loaderData.user}, log out`}
-          >
-            Logout
-          </button>
-        </Form>
-      </header>
-      <section>
-        <div>
-          Logged in as <strong>{loaderData.user}</strong>
-        </div>
-        <div title={`Users: ${[...users].join(', ')}`}>
-          <strong>{users.size}</strong> Logged in users
-        </div>
-      </section>
-      <section>
-        <ul>
-          {messages.map(({ user, message }, index) => (
-            <li key={index}>
-              <strong>{user}: </strong>
-              {message}
-            </li>
-          ))}
-        </ul>
-        <Form ref={formRef} method="post" replace>
-          <input type="text" name="message" />
-          <button type="submit" name="_action" value="send-message">
-            Send
-          </button>
-        </Form>
-      </section>
-    </main>
-  )
+  return <MainChat
+    loaderData={loaderData}
+    messages={messages}
+  />
 }

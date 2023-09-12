@@ -5,6 +5,7 @@ import ChatManager from '~/chat.server'
 import { commitSession, getSession } from '~/session.server'
 import { ActionData } from "~/interfaces";
 import { MAX_USERNAME_LENGTH } from "~/constants";
+import { Login } from "~/components/Login";
 
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -44,15 +45,6 @@ export default function Index() {
 
   // This should be styled better
   return (
-    <main style={{ fontFamily: 'Helvetica, sans-serif', lineHeight: '1.4' }}>
-      <h1>Remix Chat</h1>
-      <Form method="post">
-        <input type="text" name="user" placeholder="Username" />
-        <button type="submit">Join</button>
-      </Form>
-      {actionData?.error ? (
-        <div style={{ color: 'red' }}>{actionData.error}</div>
-      ) : null}
-    </main>
+    <Login actionData={actionData as ActionData}/>
   )
 }
