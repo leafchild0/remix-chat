@@ -1,5 +1,5 @@
 import { createCookieSessionStorage } from '@remix-run/node'
-import { SESSION_SECRET } from "~/constants";
+import { DEFAULT_SESSION_SECRET } from "~/constants";
 
 // Pretty much all that is needed to do basic session management
 // Do not use this on PROD, at least not in this way
@@ -12,7 +12,7 @@ const { getSession, commitSession, destroySession } =
       maxAge: 3_600, // 1 Hour
       path: '/',
       sameSite: 'lax',
-      secrets: [SESSION_SECRET],
+      secrets: [process.env.SESSION_SECRET || DEFAULT_SESSION_SECRET],
       secure: true,
     },
   })
