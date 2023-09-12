@@ -1,4 +1,4 @@
-import type { MetaFunction } from '@remix-run/node'
+import type { LinksFunction, MetaFunction } from "@remix-run/node";
 import {
   Links,
   LiveReload,
@@ -9,6 +9,7 @@ import {
 } from '@remix-run/react'
 import { LRUCache } from "lru-cache";
 import { EventEmitter } from "node:events";
+import styles from './root.css';
 
 declare global {
   let users: LRUCache<string, {}>;
@@ -31,6 +32,10 @@ export const meta: MetaFunction = () => ({
   title: 'Remix Chat App',
   viewport: 'width=device-width,initial-scale=1',
 })
+
+export const links: LinksFunction = () => {
+  return [{ rel: "stylesheet", href: styles }];
+}
 
 export default function App() {
   return (
