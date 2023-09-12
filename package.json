@@ -1,0 +1,11 @@
+{
+  "name": "t-chat",
+  "version": "1.0.0",
+  "description": "Simple chat app using sockets and node",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run test"
+  },
+  "author": "leafchild0",
+  "license": "ISC"
+}
