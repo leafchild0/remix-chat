@@ -1,5 +1,5 @@
 {
-  "name": "t-chat",
+  "name": "remix-chat",
   "version": "1.0.0",
   "description": "Simple chat app using Remix and node",
   "main": "server.js",
