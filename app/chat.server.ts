@@ -23,7 +23,7 @@ export default class ChatManager {
   /**
    * Removes a user from the chat.
    */
-  static removeUser(user: string)  {
+  static removeUser(user: string) {
     users.delete(user)
     chatEvents.emit('user-left', user)
   }
@@ -48,5 +48,4 @@ export default class ChatManager {
   static sendMessage(user: string, message: string) {
     chatEvents.emit('message', { user, message })
   }
-
 }
