@@ -1,12 +1,11 @@
 import type { ActionFunction, LoaderFunction } from '@remix-run/node'
 import { json, redirect } from '@remix-run/node'
-import { Form, useActionData } from '@remix-run/react'
+import { useActionData } from '@remix-run/react'
 import ChatManager from '~/chat.server'
 import { commitSession, getSession } from '~/session.server'
-import { ActionData } from "~/interfaces";
-import { MAX_USERNAME_LENGTH } from "~/constants";
-import { Login } from "~/components/Login";
-
+import type { ActionData } from '~/interfaces'
+import { MAX_USERNAME_LENGTH } from '~/constants'
+import { Login } from '~/components/Login'
 
 export const loader: LoaderFunction = async ({ request }) => {
   const session = await getSession(request.headers.get('Cookie'))
@@ -44,7 +43,5 @@ export default function Index() {
   const actionData = useActionData<ActionData>()
 
   // This should be styled better
-  return (
-    <Login actionData={actionData as ActionData}/>
-  )
+  return <Login actionData={actionData as ActionData} />
 }

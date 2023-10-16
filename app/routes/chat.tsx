@@ -1,12 +1,12 @@
-import type { ActionFunction, LoaderFunction } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
-import { useEffect, useState } from "react";
-import ChatManager from "~/chat.server";
-import { destroySession, getSession } from "~/session.server";
-import { ChatMessage, LoaderData } from "~/interfaces";
-import { MAX_MESSAGE_LENGTH } from "~/constants";
-import { Chat as MainChat } from "../components/Chat";
+import type { ActionFunction, LoaderFunction } from '@remix-run/node'
+import { json, redirect } from '@remix-run/node'
+import { useLoaderData } from '@remix-run/react'
+import { useEffect, useState } from 'react'
+import ChatManager from '~/chat.server'
+import { destroySession, getSession } from '~/session.server'
+import type { ChatMessage, LoaderData } from '~/interfaces'
+import { MAX_MESSAGE_LENGTH } from '~/constants'
+import { Chat as MainChat } from '../components/Chat'
 
 export const loader: LoaderFunction = async ({ request }) => {
   const user = await ChatManager.getSessionUser(request)
@@ -76,8 +76,5 @@ export default function Chat() {
     return () => eventSource.close()
   }, [])
 
-  return <MainChat
-    loaderData={loaderData}
-    messages={messages}
-  />
+  return <MainChat loaderData={loaderData} messages={messages} />
 }

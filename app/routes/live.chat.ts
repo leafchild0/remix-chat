@@ -1,7 +1,7 @@
 import type { LoaderFunction } from '@remix-run/node'
 import ChatManager from '~/chat.server'
-import { ChatMessage } from "~/interfaces";
-import { chat } from "~/root";
+import type { ChatMessage } from '~/interfaces'
+import { chat } from '~/root'
 
 /**
  * Pretty much logic of live chatting here, events emitting, these are streams
